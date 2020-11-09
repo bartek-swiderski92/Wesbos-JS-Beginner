@@ -10,7 +10,76 @@
 
 <body>
   <script>
+    const wait = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
 
+
+    function makePizza(toppings = []) {
+      return new Promise(function (resolve, reject) {
+        // reject if people try with pineapple
+        if (toppings.includes('pineapple')) {
+          reject('Seriously? Get out 🍍');
+        }
+        const amountOfTimeToBake = 500 + (toppings.length * 200);
+        // wait 1 second for the pizza to cook:
+        setTimeout(function () {
+          // when you are ready, you can resolve this promise
+          resolve(`Here is your pizza 🍕 with the toppings ${toppings.join(' ')}`);
+        }, amountOfTimeToBake);
+        // if something went wrong, we can reject this promise;
+      });
+    }
+    async function go() {
+      console.log('Starting');
+      await wait(2000);
+      console.log('running');
+      await wait(2000);
+      console.log('ending');
+    }
+
+    // go();
+
+    async function makeDinner() {
+      // const pizza1 = await makePizza(['pepperoni']);
+      // console.log(pizza1);
+      // const pizza2 = await makePizza(['onions']);
+      // console.log(pizza2);
+      // const pizza3 = await makePizza(['mushroom', 'pepper', 'cucumber', 'olives', 'mushroom', 'pepper', 'cucumber',
+      //   'olives', 'mushroom', 'pepper', 'cucumber', 'olives'
+      // ]);
+      // console.log(pizza3);
+
+      const pizzaPromise1 = makePizza(['pepperoni']);
+      const pizzaPromise2 = await makePizza(['onions']);
+      const pizzaPromise3 = await makePizza(['mushroom', 'pepper', 'cucumber', 'olives', 'mushroom', 'pepper',
+        'cucumber', 'olives', 'mushroom', 'pepper', 'cucumber', 'olives'
+      ]);
+      const [pep, oni, mix] = await Promise.all([pizzaPromise1, pizzaPromise2, pizzaPromise3])
+      console.log(pep, oni, mix);
+
+    }
+
+    makeDinner();
+
+    // // Function Declaration
+    // async function fd() {};
+
+    // //Arrow Function
+    // const arrowFn = async () => {};
+
+    // // Call Back
+    // window.addEventListener('click', async function () {})
+
+    // //
+    // const person = {
+    //   // method
+    //   sayHi: async function () {},
+
+    //   // method shorthand
+    //   async sayHello() {},
+
+    //   //function property 
+    //   sayHey: async () => {}
+    // }
   </script>
 </body>
 
