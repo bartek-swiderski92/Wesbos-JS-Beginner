@@ -1,6 +1,7 @@
 const baseEndpoint = 'http://www.recipepuppy.com/api';
 const proxy = `https://cors-anywhere.herokuapp.com/`;
 const form = document.querySelector('form.search');
+const recipesGrid = document.querySelector('.recipes');
 
 async function fetchRecipes(query) {
     const res = await fetch(`${proxy}${baseEndpoint}?q=${query}`);
@@ -8,30 +9,35 @@ async function fetchRecipes(query) {
     return data;
 }
 
-function displayRecipes(recipes) {
-    console.log('Crating HTML');
-    const html = recipes.map(recipe =>
-        `<div>
-          <h2>${recipe.title}</h2>
-          <p>${recipe.ingredients}</p>
-          ${recipe.thumbnail && `<img src="${recipe.thumbnail}" alt="${recipe.title}"/>`}
-        div>`);
-    console.log(html);
-}
-
 async function handleSubmit(event) {
     event.preventDefault();
     const el = event.currentTarget;
-    console.log(el.query.value);
-    // turn the form off
-    el.submit.disabled = true;
-    // submit the search
-    const recipes = await fetchRecipes(el.query.value);
-    console.log(recipes.results);
-    el.submit.disabled = false;
-    displayRecipes(recipes.result);
-};
+    console.log(form.query.value);
+    fetchAndDisplay(form.query.value);
 
+};
+async function fetchAndDisplay(query) {
+    // turn the form off
+    form.submit.disabled = true;
+    // submit the search
+    const recipes = await fetchRecipes(query);
+    console.log(recipes.results);
+    form.submit.disabled = false;
+    displayRecipes(recipes.results);
+}
+
+function displayRecipes(recipes) {
+    console.log('Crating HTML');
+    const html = recipes.map(recipe => /*html*/ `
+        <div class="recipe">
+          <h2>${recipe.title}</h2>
+          <p>${recipe.ingredients}</p>
+          ${recipe.thumbnail && /*html*/`<img src="${recipe.thumbnail}" alt="${recipe.title}"/>`}
+          <a href="${recipe.href}">View Recipe -></a>
+        </div>`);
+    recipesGrid.innerHTML = html.join('')
+}
 
 form.addEventListener('submit', handleSubmit)
-fetchRecipes('pizza');
+// on page load run it with pizza
+fetchAndDisplay('pizza');
